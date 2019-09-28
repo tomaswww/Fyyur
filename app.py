@@ -23,9 +23,9 @@ moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
- 
+migrate = Migrate(app, db)
 
-# TODO: connect to a local postgresql database --> DONE
+# TODO: connect to a local postgresql database
 
 #----------------------------------------------------------------------------#
 # Models.
@@ -42,8 +42,10 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
+    show = db.relationship('Show', backref='Venue', lazy=True)
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    
 
 class Artist(db.Model):
     __tablename__ = 'Artist'
@@ -56,8 +58,10 @@ class Artist(db.Model):
     genres = db.Column(db.String(120), nullable=False)
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-
+    show = db.relationship('Show', backref='Artist', lazy=True)
+    
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
+
 
 class Show(db.Model):
     __tablename__ = 'Show'
@@ -71,7 +75,7 @@ class Show(db.Model):
 # TODO Implement Artist model
 # TODO Complete all model relationships and properties, as a database migration.
 
-migrate = Migrate(app, db)
+
 
 #----------------------------------------------------------------------------#
 # Filters.
