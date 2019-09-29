@@ -48,7 +48,7 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String(120))
     show = db.relationship('Show', backref='Venue', lazy=True)
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate --> DONE
     
 
 class Artist(db.Model):
@@ -67,7 +67,7 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(120))
     show = db.relationship('Show', backref='Artist', lazy=True)
     
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate --> DONE
 
 
 class Show(db.Model):
@@ -82,7 +82,7 @@ class Show(db.Model):
 # TODO Implement Artist model --> DONE
 # TODO Complete all model relationships and properties, as a database migration. --> DONE
 
-#NOTE: Only thing missing up to here are the upcoming/past shows, but they will be handled as queries.
+# NOTE to SELF: Only thing missing up to here are the upcoming/past shows, but they will be handled as queries.
 
 
 
@@ -116,7 +116,6 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-
   # data=Todo.query.all()
   # data = []
   # dataDict = {}
@@ -125,7 +124,8 @@ def venues():
   #
   data=Venue.query.all()
 
-  """formating
+  #HERE I HAVE TO FIND A WAY TO ORDER DATA TO BE RETURNED AS:
+  """
     data=[{
     "city": "San Francisco",
     "state": "CA",
@@ -147,6 +147,7 @@ def venues():
       "num_upcoming_shows": 0,
     }]
   }]"""
+
   return render_template('pages/venues.html', areas=data)
 
 @app.route('/venues/search', methods=['POST'])
@@ -272,8 +273,8 @@ def create_venue_submission():
     venue = Venue(name=name, city=city, state=state, phone=phone, genres=genres, facebook_link=facebook_link)
     db.session.add(venue)
     db.session.commit()
-  # TODO: insert form data as a new Venue record in the db, instead
-  # TODO: modify data to be the data object returned from db insertion
+  # TODO: insert form data as a new Venue record in the db, instead --> DONE
+  # TODO: modify data to be the data object returned from db insertion --> DONE
   # on successful db insert, flash success
     flash('Venue ' + request.form.get('name') + ' was successfully listed!')
   except:
@@ -319,7 +320,15 @@ def search_artists():
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
   # shows the venue page with the given venue_id
+  now = datetime.datetime.now()
+  past_shows_count = Show.query.filter_by(id == artist_id, start_time < now).count()
+  past_shows = Show.query.filter_by(id == artist_id, start_time < now)
+  upcoming_shows_count = Show.query.filter_by(id == artist_id, start_time >= now).count()
+  upcoming_shows = Show.query.filter_by(id == artist_id, start_time >= now)
+
+
   # TODO: replace with real venue data from the venues table, using venue_id
+
   data1={
     "id": 4,
     "name": "Guns N Petals",
@@ -399,20 +408,9 @@ def show_artist(artist_id):
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
   form = ArtistForm()
-  artist={
-    "id": 4,
-    "name": "Guns N Petals",
-    "genres": ["Rock n Roll"],
-    "city": "San Francisco",
-    "state": "CA",
-    "phone": "326-123-5000",
-    "website": "https://www.gunsnpetalsband.com",
-    "facebook_link": "https://www.facebook.com/GunsNPetals",
-    "seeking_venue": True,
-    "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
-    "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-  }
-  # TODO: populate form with fields from artist with ID <artist_id>
+  artist = Artist.query.filter_by(id=artist_id).first()
+  
+  # TODO: populate form with fields from artist with ID <artist_id> --> DONE (Name only here, for placeholder population see edit_artist.html file)
   return render_template('forms/edit_artist.html', form=form, artist=artist)
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
