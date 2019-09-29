@@ -38,7 +38,7 @@ class Venue(db.Model):
     name = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(120), nullable=False)
     state = db.Column(db.String(120), nullable=False)
-    address = db.Column(db.String(120))
+    address = db.Column(db.String(120), nullable=False)
     genres = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
@@ -266,11 +266,12 @@ def create_venue_submission():
   name = request.form.get('name')
   city = request.form.get('city')
   state = request.form.get('state')
+  address = request.form.get('address')
   phone = request.form.get('phone')
   genres = request.form.get('genres')
   facebook_link = request.form.get('facebook_link')
   try:
-    venue = Venue(name=name, city=city, state=state, phone=phone, genres=genres, facebook_link=facebook_link)
+    venue = Venue(name=name, city=city, state=state, phone=phone,address=address, genres=genres, facebook_link=facebook_link)
     db.session.add(venue)
     db.session.commit()
   # TODO: insert form data as a new Venue record in the db, instead --> DONE
