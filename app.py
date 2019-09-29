@@ -14,6 +14,7 @@ from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
 from datetime import datetime
+from sqlalchemy import func
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -116,16 +117,47 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-  # data=Todo.query.all()
-  # data = []
-  # dataDict = {}
-  # venues = Venues.query.all()
-  # for venue in venues:
-  #
+  # Initialize variables
+  data = []
+  venue_info = {}
+  venue_obj = []
+  venue_dict = {}
+  venue_details = {}
+
+  # get tuple of cities available
+  dif_cities = db.session.query(Venue.city).group_by(Venue.city).all()
+  #get details for each city
+  for dif_city in dif_cities:
+    venue_info["city"]= dif_city[0]
+    #get state
+    city_state = db.session.query(Venue.state).filter_by(city=dif_city).first()
+    venue_info["state"]= city_state[0]
+    #get venue info
+    city_venues = db.session.query(Venue.id,Venue.name).filter_by(city=dif_city).all()
+    #get venue upcoming shows
+    for city_venue in city_venues:
+      venue_details["id"] = city_venue[0]
+      venue_details["name"] = city_venue[1]
+      # define today's date to get shows as upcoming/past
+      today = datetime.now()
+      city_filter = city_venue[0]
+      num_upcoming_shows = db.session.query(func.count(Show.id)).filter(Show.start_time>today,Show.venue_id==city_filter).group_by(Show.venue_id).first()
+      venue_details["num_upcoming_shows"] = num_upcoming_shows[0]
+      venue_obj.append(venue_details)
+      venue_info["venues"] = venue_obj
+  data.append(venue_info)
+  print(data)
+  """
+  data=[]
+  venue_info={
+    "city": 
+  }
+
+  
   data=Venue.query.all()
 
   #HERE I HAVE TO FIND A WAY TO ORDER DATA TO BE RETURNED AS:
-  """
+  
     data=[{
     "city": "San Francisco",
     "state": "CA",
