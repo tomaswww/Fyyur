@@ -121,9 +121,7 @@ def venues():
   data = []
   venue_info = {}
   venue_obj = []
-  venue_dict = {}
   venue_details = {}
-
   # get tuple of cities available
   dif_cities = db.session.query(Venue.city).group_by(Venue.city).all()
   #get details for each city
@@ -146,19 +144,12 @@ def venues():
       venue_obj.append(venue_details)
       venue_info["venues"] = venue_obj
   data.append(venue_info)
-  print(data)
-  """
-  data=[]
-  venue_info={
-    "city": 
-  }
 
-  
-  data=Venue.query.all()
+  return render_template('pages/venues.html', areas=data)
 
-  #HERE I HAVE TO FIND A WAY TO ORDER DATA TO BE RETURNED AS:
+#HERE I HAVE TO FIND A WAY TO ORDER DATA TO BE RETURNED AS:
   
-    data=[{
+"""data=[{
     "city": "San Francisco",
     "state": "CA",
     "venues": [{
@@ -177,34 +168,48 @@ def venues():
       "id": 2,
       "name": "The Dueling Pianos Bar",
       "num_upcoming_shows": 0,
-    }]
-  }]"""
+    }]"""
 
-  return render_template('pages/venues.html', areas=data)
+  
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
-  # venue_term = request.form.get('search_term')
-  # response = Venue.query.filter_by(name.like(venue_term))
+  #initialize variables
+  response = {}
+  data = []
+  venue_info = {}
+  #search for the count of results
+  venue_term = request.form.get('search_term')
+  search = "%{}%".format(venue_term)
+  #print(search)
+  venue_count = db.session.query(func.count(Venue.id)).filter(Venue.name.like(search)).first()
+  #print(venue_count)
+  response["count"]=venue_count[0]
+  #get data obj
+  venue_ids = db.session.query(Venue.id).filter(Venue.name.like(search)).all()
+  for venue_id in venue_ids:
+    num_upcoming_shows = db.session.query(func.count(Show.id)).filter(Show.venue_id==venue_id).first()
+    venue_data_name = db.session.query(Venue.name).filter(Venue.id==venue_id[0]).first()
+    venue_info["id"] = venue_id[0]
+    venue_info["name"]= venue_data_name[0]
+    venue_info["num_upcoming_shows"]= num_upcoming_shows[0]
+    data.append(venue_info)
+    response["data"]=data
+    print(response)
+
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
   # seach for Hop should return "The Musical Hop".
-  # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
+  # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee" --> ALL DONE HERE
 
-  # Query should be something like this: select * from Venues where name like '%+%s+%';
-  """response={
-    "count": 1,
-    "data": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }"""
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
+
+  #HERE I HAVE TO FIND A WAY TO ORDER DATA TO BE RETURNED AS:
+
   data1={
     "id": 1,
     "name": "The Musical Hop",
@@ -282,6 +287,8 @@ def show_venue(venue_id):
     "past_shows_count": 1,
     "upcoming_shows_count": 1,
   }
+
+
   data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
   return render_template('pages/show_venue.html', venue=data)
 
