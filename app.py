@@ -124,6 +124,7 @@ def venues():
   # for venue in venues:
   #
   data=Venue.query.all()
+
   """formating
     data=[{
     "city": "San Francisco",
@@ -150,19 +151,21 @@ def venues():
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
+  # venue_term = request.form.get('search_term')
+  # response = Venue.query.filter_by(name.like(venue_term))
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
 
   # Query should be something like this: select * from Venues where name like '%+%s+%';
-  response={
+  """response={
     "count": 1,
     "data": [{
       "id": 2,
       "name": "The Dueling Pianos Bar",
       "num_upcoming_shows": 0,
     }]
-  }
+  }"""
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/venues/<int:venue_id>')
@@ -534,10 +537,22 @@ def create_shows():
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
   # called to create new shows in the db, upon submitting new show listing form
-  # TODO: insert form data as a new Show record in the db, instead
-
+  artist_id = request.form.get('artist_id')
+  venue_id = request.form.get('venue_id')
+  start_time = request.form.get('start_time')
+  try:
+    show = Show(artist_id=artist_id, venue_id=venue_id, start_time=start_time)
+    db.session.add(show)
+    db.session.commit()
   # on successful db insert, flash success
-  flash('Show was successfully listed!')
+    flash('Show was successfully listed!')
+
+  # TODO: insert form data as a new Show record in the db, instead --> DONE
+  except:
+    flash('An error occurred, and show could not be listed.')
+    db.session.rollback()
+  finally:
+    db.session.close()
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Show could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
