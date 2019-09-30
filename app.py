@@ -83,7 +83,7 @@ class Show(db.Model):
 # TODO Implement Artist model --> DONE
 # TODO Complete all model relationships and properties, as a database migration. --> DONE
 
-# NOTE to SELF: Only thing missing up to here are the upcoming/past shows, but they will be handled as queries.
+# NOTE to SELF: Only thing missing up to here are the upcoming/past shows, but they will be handled as queries. --> DONE
 
 
 
@@ -147,31 +147,6 @@ def venues():
 
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue. --> ALL DONE HERE
-
-#HERE I HAVE TO FIND A WAY TO ORDER DATA TO BE RETURNED AS:
-  
-"""data=[{
-    "city": "San Francisco",
-    "state": "CA",
-    "venues": [{
-      "id": 1,
-      "name": "The Musical Hop",
-      "num_upcoming_shows": 0,
-    }, {
-      "id": 3,
-      "name": "Park Square Live Music & Coffee",
-      "num_upcoming_shows": 1,
-    }]
-  }, {
-    "city": "New York",
-    "state": "NY",
-    "venues": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]"""
-
-  
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
@@ -435,7 +410,7 @@ def edit_artist_submission(artist_id):
     db.session.commit()
   # TODO: insert form data as a new Venue record in the db, instead --> ASK: VENUE? -- is Artist , error on copy/paste
   # TODO: modify data to be the data object returned from db insertion
-  # on successful db insert, flash success
+  # on successful db insert, flash success --> ALL DONE HERE
     flash('Artist ' + request.form.get('name') + ' was successfully updated!')
   except:
     flash('An error occurred. Artist ' +request.form.get('name') + ' could not be updated.')
@@ -453,7 +428,7 @@ def edit_venue(venue_id):
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
-  # TODO: take values from the form submitted, and update existing
+  # TODO: take values from the form submitted, and update existing --> DONE
   try:
     venue = Venue.query.get(venue_id)
     venue.name = request.form.get('name')
@@ -471,8 +446,8 @@ def edit_venue_submission(venue_id):
     db.session.rollback()
   finally:
     db.session.close()
-  # TODO: on unsuccessful db insert, flash an error instead. e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.') --> DONE
-  # venue record with ID <venue_id> using the new attributes
+  # TODO: on unsuccessful db insert, flash an error instead. e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.') 
+  # venue record with ID <venue_id> using the new attributes --> ALL DONE HERE
   return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
@@ -498,7 +473,7 @@ def create_artist_submission():
     db.session.commit()
   # TODO: insert form data as a new Venue record in the db, instead --> ASK: VENUE? -- is Artist , error on copy/paste
   # TODO: modify data to be the data object returned from db insertion
-  # on successful db insert, flash success
+  # on successful db insert, flash success --> ALL DONE HERE
     flash('Artist ' + request.form.get('name') + ' was successfully listed!')
   except:
     flash('An error occurred. Artist ' + request.form.get('name') + ' could not be listed.')
