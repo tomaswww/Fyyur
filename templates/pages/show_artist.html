@@ -3,8 +3,9 @@
 {% block content %}
 <div class="row">
 	<div class="col-sm-6">
-		<h1 class="monospace">
-			{{ artist.name }}
+		<h1 class="monospace" style="cursor: pointer" onclick="window.location='/artists/'+ {{ artist.id }} +'/edit'">
+			{{ artist.name }} 
+			<i class="fas fa-pencil" style="font-size: 20px">✎ </i>
 		</h1>
 		<p class="subtitle">
 			ID: {{ artist.id }}
