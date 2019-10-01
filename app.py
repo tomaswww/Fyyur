@@ -205,7 +205,7 @@ def show_venue(venue_id):
   #query past shows
   past_shows_count = db.session.query(func.count(Show.id)).filter(Show.venue_id == venue_id, Show.start_time < now).first()
   data["past_shows_count"] = past_shows_count[0]
-  past_shows_data = db.session.query(Show.artist_id, Artist.name, Artist.image_link, Show.start_time).filter(Show.venue_id == venue_id, Show.start_time < now).all()
+  past_shows_data = db.session.query(Show.artist_id, Artist.name, Artist.image_link, Show.start_time).join(Artist).filter(Show.venue_id == venue_id, Show.start_time < now).all()
   for past_show_data in past_shows_data:
     p_s_d = {}
     p_s_d["artist_id"] = past_show_data[0]
@@ -220,7 +220,7 @@ def show_venue(venue_id):
   #query future shows
   upcoming_shows_count = db.session.query(func.count(Show.id)).filter(Show.venue_id == venue_id, Show.start_time > now).first()
   data["upcoming_shows_count"] = upcoming_shows_count[0]
-  upcoming_shows_data = db.session.query(Show.artist_id, Artist.name, Artist.image_link, Show.start_time).filter(Show.venue_id == venue_id, Show.start_time > now).all()
+  upcoming_shows_data = db.session.query(Show.artist_id, Artist.name, Artist.image_link, Show.start_time).join(Artist).filter(Show.venue_id == venue_id, Show.start_time > now).all()
   for upcoming_show_data in upcoming_shows_data:
     u_s_d = {}
     u_s_d["artist_id"] = upcoming_show_data[0]
@@ -360,7 +360,7 @@ def show_artist(artist_id):
   #query past shows
   past_shows_count = db.session.query(func.count(Show.id)).filter(Show.artist_id==artist_id, Show.start_time< now).first()
   data["past_shows_count"] = past_shows_count[0]
-  past_shows_data = db.session.query(Show.venue_id, Venue.name, Venue.image_link, Show.start_time).filter(Show.artist_id == artist_id, Show.start_time < now).all()
+  past_shows_data = db.session.query(Show.venue_id, Venue.name, Venue.image_link, Show.start_time).join(Venue).filter(Show.artist_id == artist_id, Show.start_time < now).all()
   for past_show_data in past_shows_data:
     p_s_d = {}
     p_s_d["venue_id"] = past_show_data[0]
@@ -375,7 +375,7 @@ def show_artist(artist_id):
   #query future shows
   upcoming_shows_count = db.session.query(func.count(Show.id)).filter(Show.artist_id==artist_id, Show.start_time> now).first()
   data["upcoming_shows_count"] = upcoming_shows_count[0]
-  upcoming_shows_data = db.session.query(Show.venue_id, Venue.name, Venue.image_link, Show.start_time).filter(Show.artist_id == artist_id, Show.start_time > now).all()
+  upcoming_shows_data = db.session.query(Show.venue_id, Venue.name, Venue.image_link, Show.start_time).join(Venue).filter(Show.artist_id == artist_id, Show.start_time > now).all()
   for upcoming_show_data in upcoming_shows_data:
     u_s_d = {}
     u_s_d["venue_id"] = upcoming_show_data[0]
