@@ -362,6 +362,7 @@ def edit_artist_submission(artist_id):
     artist.phone = request.form.get('phone')
     artist.genres = request.form.get('genres')
     artist.facebook_link = request.form.get('facebook_link')
+    artist.image_link = request.form.get('image_link')
     db.session.commit()
   # TODO: insert form data as a new Venue record in the db, instead --> ASK: VENUE? -- is Artist , error on copy/paste
   # TODO: modify data to be the data object returned from db insertion
@@ -422,8 +423,9 @@ def create_artist_submission():
   phone =  request.form.get('phone')
   genres =  request.form.get('genres')
   facebook_link = request.form.get('facebook_link')
+  image_link = request.form.get('image_link')
   try:
-    artist = Artist(name=name, city=city, state=state, phone=phone, genres=genres, facebook_link=facebook_link)
+    artist = Artist(name=name, city=city, state=state, phone=phone, genres=genres, facebook_link=facebook_link, image_link=image_link)
     db.session.add(artist)
     db.session.commit()
   # TODO: insert form data as a new Venue record in the db, instead --> ASK: VENUE? -- is Artist , error on copy/paste
