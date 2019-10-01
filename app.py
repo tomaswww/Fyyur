@@ -83,9 +83,6 @@ class Show(db.Model):
 # TODO Implement Artist model --> DONE
 # TODO Complete all model relationships and properties, as a database migration. --> DONE
 
-# NOTE to SELF: Only thing missing up to here are the upcoming/past shows, but they will be handled as queries. --> DONE
-
-
 
 #----------------------------------------------------------------------------#
 # Filters.
