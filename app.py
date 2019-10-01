@@ -82,7 +82,11 @@ def venues():
       today = datetime.now()
       city_filter = city_venue[0]
       num_upcoming_shows = db.session.query(func.count(Show.id)).filter(Show.start_time>today,Show.venue_id==city_filter).group_by(Show.venue_id).first()
-      venue_details["num_upcoming_shows"] = num_upcoming_shows[0]
+      if num_upcoming_shows:
+        venue_details["num_upcoming_shows"] = num_upcoming_shows[0]
+        print(venue_details)
+      else:
+        venue_details["num_upcoming_shows"] = 0
       venue_obj.append(venue_details)
       venue_info["venues"] = venue_obj
   data.append(venue_info)
