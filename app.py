@@ -106,11 +106,11 @@ def search_venues():
   venue_term = request.form.get('search_term')
   search = "%{}%".format(venue_term)
   #print(search)
-  venue_count = db.session.query(func.count(Venue.id)).filter(Venue.name.like(search)).first()
+  venue_count = db.session.query(func.count(Venue.id)).filter(Venue.name.ilike(search)).first()
   #print(venue_count)
   response["count"]=venue_count[0]
   #get data obj
-  venue_ids = db.session.query(Venue.id).filter(Venue.name.like(search)).all()
+  venue_ids = db.session.query(Venue.id).filter(Venue.name.ilike(search)).all()
   for venue_id in venue_ids:
     num_upcoming_shows = db.session.query(func.count(Show.id)).filter(Show.venue_id==venue_id).first()
     venue_data_name = db.session.query(Venue.name).filter(Venue.id==venue_id[0]).first()
@@ -262,11 +262,11 @@ def search_artists():
   artist_term = request.form.get('search_term')
   search = "%{}%".format(artist_term)
   #print(search)
-  artist_count = db.session.query(func.count(Artist.id)).filter(Artist.name.like(search)).first()
+  artist_count = db.session.query(func.count(Artist.id)).filter(Artist.name.ilike(search)).first()
   #print(artist_count)
   response["count"] = artist_count[0]
   #get data obj
-  artist_ids = db.session.query(Artist.id).filter(Artist.name.like(search)).all()
+  artist_ids = db.session.query(Artist.id).filter(Artist.name.ilike(search)).all()
   for artist_id in artist_ids:
     num_upcoming_shows = db.session.query(func.count(Show.id)).filter(Show.artist_id == artist_id).first()
     artist_data_name = db.session.query(Artist.name).filter(Artist.id == artist_id[0]).first()
